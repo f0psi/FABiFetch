@@ -1,4 +1,4 @@
-import requests
+import requests,csv 
 from datetime import datetime
 from bs4 import BeautifulSoup 
 from selenium import webdriver
@@ -28,12 +28,17 @@ def getPrice(cardName, browser):
 def stopBrowser(browser):
     browser.quit()
 
-def main():
-    cardName = "Concuss-Blue-Regular"
-    browser = startBrowser()
-    newPrice = getPrice(cardName, browser)
-    log(newPrice, 0)
-    stopBrowser(browser)
 
+browser = startBrowser()
+data = []
 
-main()
+with open ("test.csv", "r") as f:
+    for row in csv.reader(f):
+        cardName = row[1]
+        newPrice = getPrice(cardName, browser)
+        data.append([row[0], row[1], newPrice])
+        log(newPrice, 0)
+
+with open('test.csv', mode='w') as wf:
+    w = csv.writer(wf, delimiter=',')
+    w.writerows(data)
